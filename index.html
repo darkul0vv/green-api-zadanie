@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>GREEN API Test</title>
+
+<style>
+*{
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+margin:0;
+padding:40px;
+background:#f5f5f5;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+display:flex;
+gap:30px;
+}
+
+.left{
+width:360px;
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+.right{
+flex:1;
+}
+
+input, textarea{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:4px;
+font-size:15px;
+}
+
+textarea{
+resize:none;
+}
+
+button{
+width:100%;
+padding:14px;
+background:white;
+border:1px solid #bbb;
+border-radius:4px;
+cursor:pointer;
+font-size:15px;
+}
+
+button:hover{
+background:#f0f0f0;
+}
+
+.message-box{
+height:90px;
+}
+
+.response{
+height:700px;
+background:white;
+}
+
+.label{
+font-size:15px;
+font-weight:bold;
+margin-bottom:8px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="left">
+
+<input id="idInstance" value="7107600370" placeholder="idInstance">
+
+<input id="apiToken" value="e353a5df49574cfeae70350ee4efa46d2f83a1e72ea6498eaf" placeholder="ApiTokenInstance">
+
+<button onclick="getSettings()">
+getSettings
+</button>
+
+<button onclick="getStateInstance()">
+getStateInstance
+</button>
+
+
+<input id="chatId"
+placeholder="77771234567@c.us">
+
+<textarea
+id="message"
+class="message-box"
+placeholder="Hello World">
+</textarea>
+
+<button onclick="sendMessage()">
+sendMessage
+</button>
+
+
+<input id="fileChatId"
+placeholder="77771234567@c.us">
+
+<input id="fileUrl"
+placeholder="https://my.site.com/img/horse.png">
+
+<button onclick="sendFileByUrl()">
+sendFileByUrl
+</button>
+
+</div>
+
+
+<div class="right">
+<div class="label">
+Ответ:
+</div>
+
+<textarea
+id="result"
+class="response"
+readonly>
+</textarea>
+</div>
+
+</div>
+
+<script>
+
+function showResult(data){
+document.getElementById("result").value =
+JSON.stringify(data,null,2);
+}
+
+function apiUrl(method){
+let id=document.getElementById("idInstance").value;
+let token=document.getElementById("apiToken").value;
+
+return `https://api.green-api.com/waInstance${id}/${method}/${token}`;
+}
+
+
+async function getSettings(){
+
+try{
+let res=await fetch(
+apiUrl("getSettings")
+);
+
+showResult(
+await res.json()
+);
+
+}catch(e){
+showResult(e.toString());
+}
+
+}
+
+
+
+async function getStateInstance(){
+
+try{
+let res=await fetch(
+apiUrl("getStateInstance")
+);
+
+showResult(
+await res.json()
+);
+
+}catch(e){
+showResult(e.toString());
+}
+
+}
+
+
+
+async function sendMessage(){
+
+let chatId=
+document.getElementById("chatId").value;
+
+let message=
+document.getElementById("message").value;
+
+try{
+
+let res=await fetch(
+apiUrl("sendMessage"),
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+chatId,
+message
+})
+}
+);
+
+showResult(
+await res.json()
+);
+
+}catch(e){
+showResult(e.toString());
+}
+
+}
+
+
+
+async function sendFileByUrl(){
+
+let chatId=
+document.getElementById("fileChatId").value;
+
+let urlFile=
+document.getElementById("fileUrl").value;
+
+try{
+
+let res=await fetch(
+apiUrl("sendFileByUrl"),
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+chatId,
+urlFile,
+fileName:"file"
+})
+}
+);
+
+showResult(
+await res.json()
+);
+
+}catch(e){
+showResult(e.toString());
+}
+
+}
+
+</script>
+
+</body>
+</html>
